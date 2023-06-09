@@ -32,6 +32,7 @@ BuildWorkflow:
     - Clean
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
+    - Set_PSModulePath
     - Create_changelog_release_output
     - Generate_Conceptual_Help
     - Generate_Wiki_Content
@@ -44,6 +45,7 @@ BuildWorkflow:
     - Invoke_HQRM_Tests_Stop_On_Fail
 
   test:
+    - Set_PSModulePath
     - Pester_Tests_Stop_On_Fail
     - Convert_Pester_Coverage
     - Pester_if_Code_Coverage_Under_Threshold
@@ -140,3 +142,10 @@ GitHubConfig:
   GitHubConfigUserName: dscbot
   GitHubConfigUserEmail: dsccommunity@outlook.com
   UpdateChangelogOnPrerelease: false
+
+####################################################
+#           Setting Sampler PSModulePath           #
+####################################################
+SetPSModulePath:
+  RemovePersonal: true
+  RemoveProgramFiles: true
