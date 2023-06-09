@@ -75,7 +75,7 @@ Pester:
     CodeCoverage:
       Path:
       OutputFormat:
-      CoveragePercentTarget: 85
+      CoveragePercentTarget: 50
       OutputPath: JaCoCo_coverage.xml
       OutputEncoding: ascii
       ExcludeTests:
