@@ -237,23 +237,45 @@ class FileSystemObject
                 return [FileSystemObject]$returnable
             }
 
-            $destination = if (-not $this.Recurse -and $this.SourcePath -notmatch '\*\?\[\]')
-            {
-                Join-Path $this.DestinationPath (Split-Path $this.SourcePath -Leaf)
-            }
-            else
-            {
-                $this.DestinationPath
-            }
+            #$destination = if (-not $this.Recurse -and $this.SourcePath -notmatch '\*\?\[\]')
+            #{
+            #    Join-Path $this.DestinationPath (Split-Path $this.SourcePath -Leaf)
+            #}
+            #else
+            #{
+            #    $this.DestinationPath
+            #}
+            $destination = $this.DestinationPath
 
-            $currHash = $this.CompareHash($destination, $this.SourcePath, $this.Checksum, $this.Recurse)
-
-            if ($currHash.Count -gt 0)
+            if (-not (Test-Path -Path $destination))
             {
-                Write-Verbose -Message "Hashes of files in $($this.DestinationPath) (comparison path used: $destination) different from hashes in $($this.SourcePath)"
+                Write-Verbose -Message "The destination path '$destination' does not exist"
                 $returnable.Reasons += @{
-                    Code   = "File:File:HashMismatch"
-                    Phrase = "Hashes of files in $($this.DestinationPath) different from hashes in $($this.SourcePath)"
+                    Code   = "File:File:DestinationPathNotFound"
+                    Phrase = "The destination path '$destination' does not exist"
+                }
+            }
+
+            if (-not (Test-Path -Path $this.SourcePath))
+            {
+                Write-Verbose -Message "The source path '$($this.SourcePath)' does not exist"
+                $returnable.Reasons += @{
+                    Code   = "File:File:SourcePathNotFound"
+                    Phrase = "The source path '$($this.SourcePath)' does not exist"
+                }
+            }
+
+            if ((Test-Path -Path $destination) -and (Test-Path -Path $this.SourcePath))
+            {
+                $currHash = $this.CompareHash($destination, $this.SourcePath, $this.Checksum, $this.Recurse)
+
+                if ($currHash.Count -gt 0)
+                {
+                    Write-Verbose -Message "Hashes of files in $($this.DestinationPath) (comparison path used: $destination) different from hashes in $($this.SourcePath)"
+                    $returnable.Reasons += @{
+                        Code   = "File:File:HashMismatch"
+                        Phrase = "Hashes of files in $($this.DestinationPath) different from hashes in $($this.SourcePath)"
+                    }
                 }
             }
         }
