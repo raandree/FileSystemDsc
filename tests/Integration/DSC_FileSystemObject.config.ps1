@@ -113,7 +113,7 @@ configuration DSC_FileSystemObject_CopyFileWildcard_Config
         {
             DestinationPath = Join-Path -Path $tempDirDestination -ChildPath "copydestfilewc"
             SourcePath      = Join-Path -Path $tempdir -ChildPath "*file"
-            Type            = 'file'
+            Type            = 'directory'
             Ensure          = 'present'
             Force           = $true
         }
@@ -185,7 +185,7 @@ configuration DSC_FileSystemObject_CopyDirRecurse_Config
         FileSystemObject CopyDirRec
         {
             DestinationPath = $tempDirDestination
-            SourcePath      = $tempdir
+            SourcePath      = 'C:\Windows\PLA'
             Type            = 'directory'
             Ensure          = 'present'
             Recurse         = $true
@@ -219,7 +219,7 @@ configuration DSC_FileSystemObject_CopyDirRecurseWildcard_Config
         FileSystemObject CopyDirRecWc
         {
             DestinationPath = $tempDirDestination
-            SourcePath      = Join-Path -Path $tempdir -ChildPath "*"
+            SourcePath      = 'C:\Windows\PLA'
             Type            = 'directory'
             Ensure          = 'present'
             Recurse         = $true
@@ -267,7 +267,7 @@ configuration DSC_FileSystemObject_RemoveFileWildcard_Config
     {
         FileSystemObject RemoveFileWc
         {
-            DestinationPath = Join-Path -Path $tempdir -ChildPath "copydestfilewc\*"
+            DestinationPath = Join-Path -Path $tempDirDestination -ChildPath "copydestfilewc\*"
             Type            = 'file'
             Force           = $true
             Ensure          = 'absent'

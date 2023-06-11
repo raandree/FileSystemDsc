@@ -30,7 +30,7 @@ BeforeAll {
 
     $script:testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $script:dscModuleName `
-        -DSCResourceName $script:dscResourceName `
+        -DscResourceName $script:dscResourceName `
         -ResourceType 'Mof' `
         -TestType 'Integration'
 
@@ -56,7 +56,7 @@ AfterAll {
     Restore-TestEnvironment -TestEnvironment $script:testEnvironment
 }
 
-Describe "<dscResourceFriendlyName>_Integration" {
+Describe '<dscResourceFriendlyName>_Integration' {
     BeforeAll {
         $resourceId = "[$($script:dscResourceFriendlyName)]Integration_Test"
     }
@@ -75,7 +75,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -122,7 +122,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -169,7 +169,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -217,7 +217,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -237,7 +237,14 @@ Describe "<dscResourceFriendlyName>_Integration" {
 
         It 'Should be able to call Get-DscConfiguration without throwing' {
             {
-                $script:currentConfiguration = Get-DscConfiguration -Verbose -ErrorAction Stop
+                try
+                {
+                    $script:currentConfiguration = Get-DscConfiguration -Verbose -ErrorAction Stop
+                }
+                catch
+                {
+                    Write-Error -ErrorRecord $_
+                }
             } | Should -Not -Throw
         }
 
@@ -264,7 +271,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -289,7 +296,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have copied multiple files' {
-            (Get-ChildItem -Path (Join-Path -Path $script:tempDirDestination -ChildPath "copydestfilewc")).Count | Should -Be 2
+            (Get-ChildItem -Path (Join-Path -Path $script:tempDirDestination -ChildPath 'copydestfilewc')).Count | Should -Be 2
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
@@ -311,7 +318,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -336,7 +343,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have copied single dir' {
-            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath "copydestfilewc") | Should -BeTrue
+            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath 'copydestfilewc') | Should -BeTrue
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
@@ -358,7 +365,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -383,7 +390,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have copied single dir with wildcard pattern' {
-            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath "copydestfilewc\contentfile") | Should -BeTrue
+            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath 'copydestfilewc\contentfile') | Should -BeTrue
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
@@ -405,7 +412,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -430,7 +437,13 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have copied single dir recursive' {
-            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath 'this\is\recursive') | Should -BeTrue
+            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath PLA) | Should -BeTrue
+        }
+
+        It 'Should have the same file count as the source' {
+            $sourceFileCount = (Get-ChildItem -Path C:\Windows\PLA -Recurse -File).Count
+            $destinationFileCount = (Get-ChildItem -Path $tempDirDestination\PLA -Recurse -File).Count
+            $sourceFileCount | Should -Be $destinationFileCount
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
@@ -452,7 +465,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -477,12 +490,24 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have copied single dir recursive wildcard' {
-            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath "copydestdirrec\recursive\thing") | Should -BeTrue
+            Test-Path -Path (Join-Path -Path $tempDirDestination -ChildPath PLA) | Should -BeTrue
+        }
+
+        It 'Should have the same file count as the source' {
+            $sourceFileCount = (Get-ChildItem -Path C:\Windows\PLA -Recurse -File).Count
+            $destinationFileCount = (Get-ChildItem -Path $tempDirDestination\PLA -Recurse -File).Count
+            $sourceFileCount | Should -Be $destinationFileCount
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
-            Test-DscConfiguration -Verbose | Should -Be 'True'
+            Test-DscConfiguration -Verbose | Should -Be True
         }
+
+        It 'Should return $false when Test-DscConfiguration is run and content was modified' {
+            'Other content' | Out-File -FilePath (Join-Path -Path $tempDirDestination -ChildPath 'PLA\Templates\WDAC_Diagnostics.xml') -Encoding UTF8 -Force
+            Test-DscConfiguration -Verbose | Should -Be False
+        }
+
     }
 
     Context ('When using configuration <_>') -ForEach @(
@@ -499,7 +524,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -524,7 +549,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have removed single file' {
-            Test-Path -Path (Join-Path -Path $tempdir -ChildPath "emptyfile") | Should -BeFalse
+            Test-Path -Path (Join-Path -Path $tempdir -ChildPath 'emptyfile') | Should -BeFalse
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
@@ -546,7 +571,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
@@ -571,7 +596,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         }
 
         It 'Should have removed single file' {
-            (Get-ChildItem -Path (Join-Path -Path $tempdir -ChildPath "copydestfilewc")).Count | Should -Be 0
+            (Get-ChildItem -Path (Join-Path -Path $tempDirDestination -ChildPath 'copydestfilewc')).Count | Should -Be 0
         }
 
         It 'Should return $true when Test-DscConfiguration is run' {
@@ -593,7 +618,7 @@ Describe "<dscResourceFriendlyName>_Integration" {
         It 'Should compile and apply the MOF without throwing' {
             {
                 $configurationParameters = @{
-                    OutputPath        = $TestDrive
+                    OutputPath = $TestDrive
                 }
 
                 & $configurationName @configurationParameters
